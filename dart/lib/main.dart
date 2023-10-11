@@ -7,11 +7,11 @@ void main() {
 class ChuvaDart extends StatelessWidget {
   const ChuvaDart({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Exercicio chuva',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
@@ -41,62 +41,105 @@ class _CalendarState extends State<Calendar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Chuva ❤️ Flutter'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Programação',
+        appBar: AppBar(
+          toolbarHeight: 100,
+          backgroundColor: const Color(0xff456189),
+          centerTitle: true,
+          title: const SafeArea(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Chuva',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Icon(
+                      Icons.favorite,
+                      color: Color(0xffb642f5),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      'Flutter',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Text(
+                  'Programação',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
-            const Text(
-              'Nov',
-            ),
-            const Text(
-              '2023',
-            ),
-            OutlinedButton(
-              onPressed: () {
-                _changeDate(DateTime(2023, 11, 26));
-              },
-              child: Text(
-                '26',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-            ),
-            OutlinedButton(
-              onPressed: () {
-                _changeDate(DateTime(2023, 11, 28));
-              },
-              child: Text(
-                '28',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-            ),
-            if (_currentDate.day == 26)
-              OutlinedButton(
-                  onPressed: () {
-                    setState(() {
-                      _clicked = true;
-                    });
-                  },
-                  child: const Text('Mesa redonda de 07:00 até 08:00')),
-            if (_currentDate.day == 28)
-              OutlinedButton(
-                  onPressed: () {
-                    setState(() {
-                      _clicked = true;
-                    });
-                  },
-                  child: const Text('Palestra de 09:30 até 10:00')),
-            if (_currentDate.day == 26 && _clicked) const Activity(),
-          ],
+          ),
+          leading: const Icon(
+            Icons.arrow_back_ios,
+            color: Colors.white,
+          ),
         ),
-      ),
-    );
+        body: Column(
+          children: [
+            Container(
+              height: 100,
+              color: const Color(0xff456189),
+              alignment: Alignment.center,
+              child: Material(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(28),
+                ),
+                child: Container(
+                  width: MediaQuery.of(context).size.width * .9,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(28),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(left: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                            color: const Color(0xff306dc3),
+                            borderRadius: BorderRadius.circular(20)),
+                        child: const Icon(
+                          Icons.calendar_month,
+                          size: 26,
+                        ),
+                      ),
+                      const Spacer(),
+                      const Padding(
+                        padding: EdgeInsets.only(right: 10),
+                        child: Text(
+                          'Exibindo todas atividades',
+                          style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      const Spacer(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ));
   }
 }
 
