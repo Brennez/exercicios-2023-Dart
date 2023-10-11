@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(const ChuvaDart());
@@ -30,7 +31,10 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   DateTime _currentDate = DateTime(2023, 11, 26);
+
   bool _clicked = false;
+
+  List<String> days_month = ['26', '27', '28', '29', '30'];
 
   void _changeDate(DateTime newDate) {
     setState(() {
@@ -38,108 +42,173 @@ class _CalendarState extends State<Calendar> {
     });
   }
 
+  int current_page = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 100,
-          backgroundColor: const Color(0xff456189),
-          centerTitle: true,
-          title: const SafeArea(
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Chuva',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Icon(
-                      Icons.favorite,
-                      color: Color(0xffb642f5),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'Flutter',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w600),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(
-                  'Programação',
-                  style: TextStyle(
-                    color: Colors.white,
+      appBar: AppBar(
+        toolbarHeight: 100,
+        backgroundColor: const Color(0xff456189),
+        centerTitle: true,
+        title: const SafeArea(
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Chuva',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w600),
                   ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Icon(
+                    Icons.favorite,
+                    color: Color(0xffb642f5),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    'Flutter',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Text(
+                'Programação',
+                style: TextStyle(
+                  color: Colors.white,
                 ),
-              ],
-            ),
-          ),
-          leading: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
+              ),
+            ],
           ),
         ),
-        body: Column(
-          children: [
-            Container(
-              height: 100,
-              color: const Color(0xff456189),
-              alignment: Alignment.center,
-              child: Material(
-                elevation: 5,
-                shape: RoundedRectangleBorder(
+        leading: const Icon(
+          Icons.arrow_back_ios,
+          color: Colors.white,
+        ),
+      ),
+      body: Column(
+        children: [
+          Container(
+            height: 100,
+            color: const Color(0xff456189),
+            alignment: Alignment.center,
+            child: Material(
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(28),
+              ),
+              child: Container(
+                width: MediaQuery.of(context).size.width * .9,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(28),
                 ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(left: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                          color: const Color(0xff306dc3),
+                          borderRadius: BorderRadius.circular(20)),
+                      child: const Icon(
+                        Icons.calendar_month,
+                        size: 26,
+                      ),
+                    ),
+                    const Spacer(),
+                    const Padding(
+                      padding: EdgeInsets.only(right: 10),
+                      child: Text(
+                        'Exibindo todas atividades',
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    const Spacer(),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
                 child: Container(
-                  width: MediaQuery.of(context).size.width * .9,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(28),
-                  ),
-                  child: Row(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  color: Colors.white,
+                  child: const Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        margin: const EdgeInsets.only(left: 8),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                            color: const Color(0xff306dc3),
-                            borderRadius: BorderRadius.circular(20)),
-                        child: const Icon(
-                          Icons.calendar_month,
-                          size: 26,
-                        ),
+                      Text(
+                        'Nov',
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.w400),
                       ),
-                      const Spacer(),
-                      const Padding(
-                        padding: EdgeInsets.only(right: 10),
-                        child: Text(
-                          'Exibindo todas atividades',
-                          style: TextStyle(fontWeight: FontWeight.w500),
-                        ),
+                      Text(
+                        '2023',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
-                      const Spacer(),
                     ],
                   ),
                 ),
               ),
-            ),
-          ],
-        ));
+              Expanded(
+                flex: 5,
+                child: Container(
+                  color: const Color(0xff306dc3),
+                  height: 60,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: days_month.length,
+                    itemBuilder: (context, index) {
+                      return Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                current_page = index;
+                              });
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Text(
+                                days_month[index],
+                                style: TextStyle(
+                                  color: current_page == index
+                                      ? Colors.white
+                                      : const Color(0xffb0c3e1),
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
 
