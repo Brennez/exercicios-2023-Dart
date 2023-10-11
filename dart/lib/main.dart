@@ -1,5 +1,9 @@
+import 'package:chuva_dart/components/card_info_component.dart';
+import 'package:chuva_dart/components/header_top_component.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import 'components/app_bar_component.dart';
 
 void main() {
   runApp(const ChuvaDart());
@@ -34,7 +38,7 @@ class _CalendarState extends State<Calendar> {
 
   bool _clicked = false;
 
-  List<String> days_month = ['26', '27', '28', '29', '30'];
+  final List<String> days_month = ['26', '27', '28', '29', '30'];
 
   void _changeDate(DateTime newDate) {
     setState(() {
@@ -51,47 +55,7 @@ class _CalendarState extends State<Calendar> {
         toolbarHeight: 100,
         backgroundColor: const Color(0xff456189),
         centerTitle: true,
-        title: const SafeArea(
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Chuva',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w600),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Icon(
-                    Icons.favorite,
-                    color: Color(0xffb642f5),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    'Flutter',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Text(
-                'Programação',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-        ),
+        title: const AppBarComponent(),
         leading: const Icon(
           Icons.arrow_back_ios,
           color: Colors.white,
@@ -99,51 +63,7 @@ class _CalendarState extends State<Calendar> {
       ),
       body: Column(
         children: [
-          Container(
-            height: 100,
-            color: const Color(0xff456189),
-            alignment: Alignment.center,
-            child: Material(
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(28),
-              ),
-              child: Container(
-                width: MediaQuery.of(context).size.width * .9,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(28),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(left: 8),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                          color: const Color(0xff306dc3),
-                          borderRadius: BorderRadius.circular(20)),
-                      child: const Icon(
-                        Icons.calendar_month,
-                        size: 26,
-                      ),
-                    ),
-                    const Spacer(),
-                    const Padding(
-                      padding: EdgeInsets.only(right: 10),
-                      child: Text(
-                        'Exibindo todas atividades',
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    const Spacer(),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          const HeaderComponent(),
           Row(
             children: [
               Expanded(
@@ -206,6 +126,14 @@ class _CalendarState extends State<Calendar> {
               ),
             ],
           ),
+          CardInfoComponent(
+            start: '07:00',
+            end: '08:00',
+            categoryTitle: 'Mesa redonda',
+            topicTitle: 'A física dos Buracos Negros Supermassivos',
+            author: 'Stephen Willian Hawking',
+            isFavorite: true,
+          )
         ],
       ),
     );
