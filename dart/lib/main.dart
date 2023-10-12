@@ -1,4 +1,6 @@
+import 'package:chuva_dart/utils/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'components/card_info_component.dart';
@@ -7,6 +9,7 @@ import 'components/app_bar_component.dart';
 
 import '../providers/event_provider.dart';
 import '../utils/date_formater.dart';
+import 'pages/details_event_page.dart';
 
 void main() {
   runApp(const ChuvaDart());
@@ -23,14 +26,25 @@ class ChuvaDart extends StatelessWidget {
           create: (context) => EventProvider(),
         )
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
+        routerConfig: GoRouter(
+          routes: [
+            GoRoute(
+              path: AppRoutes.HOME,
+              builder: (context, state) => DetailsEventPage(),
+            ),
+            GoRoute(
+              path: AppRoutes.DETAILS_PAGE,
+              builder: (context, state) => DetailsEventPage(),
+            ),
+          ],
+        ),
         title: 'Exercicio chuva',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const Calendar(),
       ),
     );
   }
@@ -48,7 +62,7 @@ class _CalendarState extends State<Calendar> {
 
   bool _clicked = false;
 
-  final List<String> days_month = ['26', '27', '28', '29', '30'];
+  final List<String> daysMonth = ['26', '27', '28', '29', '30'];
 
   void _changeDate(DateTime newDate) {
     setState(() {
@@ -62,15 +76,9 @@ class _CalendarState extends State<Calendar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 100,
-        backgroundColor: const Color(0xff456189),
-        centerTitle: true,
-        title: const AppBarComponent(),
-        leading: const Icon(
-          Icons.arrow_back_ios,
-          color: Colors.white,
-        ),
+      appBar: PreferredSize(
+        preferredSize: const Size(double.infinity, 100),
+        child: AppBarComponent(),
       ),
       body: Column(
         children: [
@@ -106,7 +114,7 @@ class _CalendarState extends State<Calendar> {
                   height: 60,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: days_month.length,
+                    itemCount: daysMonth.length,
                     itemBuilder: (context, index) {
                       return Row(
                         children: [
@@ -114,13 +122,13 @@ class _CalendarState extends State<Calendar> {
                             onTap: () {
                               setState(() {
                                 currentPage = index;
-                                dayMonth = days_month[index];
+                                dayMonth = daysMonth[index];
                               });
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(12),
                               child: Text(
-                                days_month[index],
+                                daysMonth[index],
                                 style: TextStyle(
                                   color: currentPage == index
                                       ? Colors.white
@@ -159,8 +167,11 @@ class _CalendarState extends State<Calendar> {
                   return ListView.builder(
                       itemCount: filteredList.length,
                       itemBuilder: (context, index) {
-                        return CardInfoComponent(
-                          eventModel: filteredList.elementAt(index),
+                        return GestureDetector(
+                          onTap: () => context.go(AppRoutes.DETAILS_PAGE),
+                          child: CardInfoComponent(
+                            eventModel: filteredList.elementAt(index),
+                          ),
                         );
                       });
                 }
