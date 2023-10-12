@@ -1,4 +1,5 @@
 import 'package:chuva_dart/models/event_model.dart';
+import 'package:chuva_dart/utils/date_formater.dart';
 import 'package:flutter/material.dart';
 
 class CardInfoComponent extends StatelessWidget {
@@ -31,10 +32,10 @@ class CardInfoComponent extends StatelessWidget {
               ),
               child: ListTile(
                 title: Text(
-                  '${eventModel.categoryTitle} de ${eventModel.start} até ${eventModel.end}',
+                  '${eventModel.categoryTitle} de ${DateFormater.hourFormater(eventModel.start)} até ${DateFormater.hourFormater(eventModel.end)}',
                   style: const TextStyle(
                       color: Colors.black54,
-                      fontSize: 16,
+                      fontSize: 15,
                       fontWeight: FontWeight.w600),
                 ),
                 subtitle: Column(
