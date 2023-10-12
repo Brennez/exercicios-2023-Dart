@@ -1,7 +1,11 @@
 import 'package:chuva_dart/components/card_info_component.dart';
 import 'package:chuva_dart/components/header_top_component.dart';
+import 'package:chuva_dart/http/client.dart';
+import 'package:chuva_dart/models/event_model.dart';
+import 'package:chuva_dart/providers/event_provider.dart';
+import 'package:chuva_dart/repositories/event_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import 'components/app_bar_component.dart';
 
@@ -14,14 +18,21 @@ class ChuvaDart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Exercicio chuva',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => EventProvider(),
+        )
+      ],
+      child: MaterialApp(
+        title: 'Exercicio chuva',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: const Calendar(),
       ),
-      home: const Calendar(),
     );
   }
 }
@@ -47,6 +58,14 @@ class _CalendarState extends State<Calendar> {
   }
 
   int current_page = 0;
+
+  Future<void> getItems() async {
+    List<EventModel> items =
+        await EventRepository(client: HttpClient()).getEvents();
+    items.forEach((element) {
+      print(element.categoryTitle);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,14 +145,31 @@ class _CalendarState extends State<Calendar> {
               ),
             ],
           ),
-          CardInfoComponent(
-            start: '07:00',
-            end: '08:00',
-            categoryTitle: 'Mesa redonda',
-            topicTitle: 'A física dos Buracos Negros Supermassivos',
-            author: 'Stephen Willian Hawking',
-            isFavorite: true,
-          )
+          Expanded(
+            child: FutureBuilder(
+              future: Provider.of<EventProvider>(context, listen: false)
+                  .getEvents(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (!snapshot.hasData) {
+                  return const Center(
+                    child: Text('Sem dados por enquanto...'),
+                  );
+                } else {
+                  return ListView.builder(
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        return CardInfoComponent(
+                          eventModel: snapshot.data![index],
+                        );
+                      });
+                }
+              },
+            ),
+          ),
         ],
       ),
     );
