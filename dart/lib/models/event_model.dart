@@ -4,6 +4,7 @@ class EventModel {
   final String end;
   final String title;
   final String? description;
+  final bool isFavorite;
 
   final int categoryId;
   final String categoryTitle;
@@ -41,6 +42,7 @@ class EventModel {
     required this.peopleBio,
     required this.peopleUrlPicture,
     required this.peopleLabel,
+    this.isFavorite = false,
   });
 
   factory EventModel.fromJson(Map<String, dynamic> map) {
