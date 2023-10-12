@@ -4,6 +4,7 @@ import 'package:chuva_dart/http/client.dart';
 import 'package:chuva_dart/models/event_model.dart';
 import 'package:chuva_dart/providers/event_provider.dart';
 import 'package:chuva_dart/repositories/event_repository.dart';
+import 'package:chuva_dart/utils/date_formater.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -57,15 +58,8 @@ class _CalendarState extends State<Calendar> {
     });
   }
 
-  int current_page = 0;
-
-  Future<void> getItems() async {
-    List<EventModel> items =
-        await EventRepository(client: HttpClient()).getEvents();
-    items.forEach((element) {
-      print(element.categoryTitle);
-    });
-  }
+  int currentPage = 0;
+  String dayMonth = '26';
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +115,8 @@ class _CalendarState extends State<Calendar> {
                           GestureDetector(
                             onTap: () {
                               setState(() {
-                                current_page = index;
+                                currentPage = index;
+                                dayMonth = days_month[index];
                               });
                             },
                             child: Padding(
@@ -129,7 +124,7 @@ class _CalendarState extends State<Calendar> {
                               child: Text(
                                 days_month[index],
                                 style: TextStyle(
-                                  color: current_page == index
+                                  color: currentPage == index
                                       ? Colors.white
                                       : const Color(0xffb0c3e1),
                                   fontSize: 20,
@@ -159,11 +154,15 @@ class _CalendarState extends State<Calendar> {
                     child: Text('Sem dados por enquanto...'),
                   );
                 } else {
+                  final filteredList = snapshot.data!.where(
+                    (item) => DateFormater.dayFormater(item.start) == dayMonth,
+                  );
+
                   return ListView.builder(
-                      itemCount: snapshot.data!.length,
+                      itemCount: filteredList.length,
                       itemBuilder: (context, index) {
                         return CardInfoComponent(
-                          eventModel: snapshot.data![index],
+                          eventModel: filteredList.elementAt(index),
                         );
                       });
                 }
