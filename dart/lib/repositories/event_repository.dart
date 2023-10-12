@@ -29,7 +29,6 @@ class EventRepository implements IEventRepository {
 
       body['data'].map((item) {
         final eventModel = EventModel.fromJson(item);
-        print('MODELO: ${eventModel.peopleLabel}');
         items.add(eventModel);
       }).toList();
 
