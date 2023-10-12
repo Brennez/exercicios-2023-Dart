@@ -1,21 +1,12 @@
+import 'package:chuva_dart/models/event_model.dart';
 import 'package:flutter/material.dart';
 
 class CardInfoComponent extends StatelessWidget {
-  bool isFavorite;
-  final String start;
-  final String end;
-  final String categoryTitle;
-  final String topicTitle;
-  final String author;
+  final EventModel eventModel;
 
   CardInfoComponent({
     super.key,
-    this.isFavorite = false,
-    required this.start,
-    required this.end,
-    required this.categoryTitle,
-    required this.topicTitle,
-    required this.author,
+    required this.eventModel,
   });
 
   @override
@@ -40,7 +31,7 @@ class CardInfoComponent extends StatelessWidget {
               ),
               child: ListTile(
                 title: Text(
-                  '$categoryTitle de $start até $end',
+                  '${eventModel.categoryTitle} de ${eventModel.start} até ${eventModel.end}',
                   style: const TextStyle(
                       color: Colors.black54,
                       fontSize: 16,
@@ -53,7 +44,7 @@ class CardInfoComponent extends StatelessWidget {
                       height: 3,
                     ),
                     Text(
-                      topicTitle,
+                      eventModel.title,
                       style: const TextStyle(
                           color: Colors.black87,
                           fontSize: 20,
@@ -63,7 +54,9 @@ class CardInfoComponent extends StatelessWidget {
                       height: 5,
                     ),
                     Text(
-                      author,
+                      eventModel.peopleName.isNotEmpty
+                          ? eventModel.peopleName[0]
+                          : '',
                       style: const TextStyle(
                           color: Colors.grey,
                           fontSize: 16,
@@ -75,7 +68,7 @@ class CardInfoComponent extends StatelessWidget {
             ),
           ),
         ),
-        if (isFavorite)
+        if (eventModel.isFavorite)
           const Positioned(
             right: 10,
             top: 6,
