@@ -1,6 +1,7 @@
 import 'package:chuva_dart/models/event_model.dart';
 import 'package:chuva_dart/utils/date_formater.dart';
 import 'package:flutter/material.dart';
+import 'package:from_css_color/from_css_color.dart';
 
 class CardInfoComponent extends StatelessWidget {
   final EventModel eventModel;
@@ -24,10 +25,12 @@ class CardInfoComponent extends StatelessWidget {
               ),
             ),
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border(
-                  left: BorderSide(color: Colors.green, width: 6),
+                  left: BorderSide(
+                      color: fromCssColor('${eventModel.categoryColor}'),
+                      width: 6),
                 ),
               ),
               child: ListTile(

@@ -1,14 +1,12 @@
-import 'package:chuva_dart/components/card_info_component.dart';
-import 'package:chuva_dart/components/header_top_component.dart';
-import 'package:chuva_dart/http/client.dart';
-import 'package:chuva_dart/models/event_model.dart';
-import 'package:chuva_dart/providers/event_provider.dart';
-import 'package:chuva_dart/repositories/event_repository.dart';
-import 'package:chuva_dart/utils/date_formater.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'components/card_info_component.dart';
+import 'components/header_top_component.dart';
 import 'components/app_bar_component.dart';
+
+import '../providers/event_provider.dart';
+import '../utils/date_formater.dart';
 
 void main() {
   runApp(const ChuvaDart());
