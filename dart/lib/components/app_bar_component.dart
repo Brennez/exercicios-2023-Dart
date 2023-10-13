@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class AppBarComponent extends StatelessWidget {
   final bool subtitleOn;
-  AppBarComponent({super.key, this.subtitleOn = true});
+  final void Function() onPressed;
+  AppBarComponent({super.key, this.subtitleOn = true, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +53,12 @@ class AppBarComponent extends StatelessWidget {
           ],
         ),
       ),
-      leading: const Icon(
-        Icons.arrow_back_ios,
-        color: Colors.white,
+      leading: IconButton(
+        icon: const Icon(
+          Icons.arrow_back_ios,
+          color: Colors.white,
+        ),
+        onPressed: onPressed,
       ),
     );
   }
