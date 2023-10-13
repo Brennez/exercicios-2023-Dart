@@ -57,14 +57,22 @@ class CardInfoComponent extends StatelessWidget {
                     const SizedBox(
                       height: 5,
                     ),
-                    Text(
-                      eventModel.peopleName.isNotEmpty
-                          ? eventModel.peopleName[0]
-                          : '',
-                      style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
+                    Row(
+                      children: eventModel.peopleName
+                          .map(
+                            (name) => FittedBox(
+                              child: Text(
+                                eventModel.peopleName.length > 1
+                                    ? '$name, '
+                                    : name,
+                                style: const TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          )
+                          .toList(),
                     )
                   ],
                 ),

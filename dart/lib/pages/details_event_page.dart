@@ -145,44 +145,48 @@ class DetailsEventPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  ListTile(
-                    leading: event.peopleUrlPicture.isNotEmpty &&
-                            event.peopleUrlPicture[0] != null
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: SizedBox(
-                              width: 50,
-                              height: 50,
-                              child: CachedNetworkImage(
-                                imageUrl: event.peopleUrlPicture[0],
-                                placeholder: (context, url) =>
-                                    const CircularProgressIndicator(),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(
-                                  Icons.error,
-                                  color: Colors.red,
+                  event.peopleName.isNotEmpty &&
+                          event.peopleInstitution.isNotEmpty
+                      ? ListTile(
+                          leading: event.peopleUrlPicture.isNotEmpty &&
+                                  event.peopleUrlPicture[0] != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child: CachedNetworkImage(
+                                      imageUrl: event.peopleUrlPicture[0],
+                                      placeholder: (context, url) =>
+                                          const CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(
+                                        Icons.error,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : const CircleAvatar(
+                                  radius: 30,
+                                  backgroundImage:
+                                      AssetImage('assets/images/user-icon.png'),
+                                  backgroundColor: Colors.white,
                                 ),
-                              ),
-                            ),
-                          )
-                        : const CircleAvatar(
-                            radius: 30,
-                            backgroundImage:
-                                AssetImage('assets/images/user-icon.png'),
-                            backgroundColor: Colors.white,
+                          title: Text(
+                            event.peopleName.isNotEmpty &&
+                                    event.peopleName[0] != null
+                                ? event.peopleName[0]
+                                : '',
                           ),
-                    title: Text(
-                      event.peopleName.isNotEmpty && event.peopleName[0] != null
-                          ? event.peopleName[0]
-                          : '',
-                    ),
-                    subtitle: Text(
-                      event.peopleInstitution.isNotEmpty &&
-                              event.peopleInstitution[0] != null
-                          ? event.peopleInstitution[0]
-                          : '',
-                    ),
-                  ),
+                          subtitle: Text(
+                            event.peopleInstitution.isNotEmpty &&
+                                    event.peopleInstitution[0] != null
+                                ? event.peopleInstitution[0]
+                                : '',
+                          ),
+                        )
+                      : const SizedBox(),
                 ],
               )
             ],
