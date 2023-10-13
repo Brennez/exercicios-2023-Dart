@@ -7,12 +7,37 @@ import 'package:from_css_color/from_css_color.dart';
 import 'package:go_router/go_router.dart';
 import '../components/app_bar_component.dart';
 
-class DetailsEventPage extends StatelessWidget {
+class DetailsEventPage extends StatefulWidget {
   final EventModel event;
   const DetailsEventPage({super.key, required this.event});
 
   @override
+  State<DetailsEventPage> createState() => _DetailsEventPageState();
+}
+
+class _DetailsEventPageState extends State<DetailsEventPage> {
+  bool isSubscriber = false;
+
+  @override
   Widget build(BuildContext context) {
+    void showSnackBar(bool isSubscriber) {
+      if (isSubscriber) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(milliseconds: 700),
+            content: Text('Vamos te lembrar dessa atividade.'),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(milliseconds: 700),
+            content: Text('Não Vamos te lembrar dessa atividade.'),
+          ),
+        );
+      }
+    }
+
     return Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size(double.infinity, 70),
@@ -27,11 +52,11 @@ class DetailsEventPage extends StatelessWidget {
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: fromCssColor('${event.categoryColor}'),
+                  color: fromCssColor('${widget.event.categoryColor}'),
                 ),
                 padding: const EdgeInsets.all(5),
                 child: Text(
-                  event.categoryTitle,
+                  widget.event.categoryTitle,
                   style: TextStyle(
                     color: Colors.grey[50],
                     fontWeight: FontWeight.w400,
@@ -42,7 +67,7 @@ class DetailsEventPage extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(vertical: 20),
                 alignment: Alignment.center,
                 child: Text(
-                  event.title,
+                  widget.event.title,
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 24,
@@ -64,7 +89,7 @@ class DetailsEventPage extends StatelessWidget {
                           width: 5,
                         ),
                         Text(
-                            '${DateFormater.dayOfWeek(event.start)} ${DateFormater.hourFormater(event.start)}h - ${DateFormater.hourFormater(event.end)}h'),
+                            '${DateFormater.dayOfWeek(widget.event.start)} ${DateFormater.hourFormater(widget.event.start)}h - ${DateFormater.hourFormater(widget.event.end)}h'),
                       ],
                     ),
                     Row(
@@ -77,8 +102,8 @@ class DetailsEventPage extends StatelessWidget {
                           width: 5,
                         ),
                         Row(
-                          children: event.locations.isNotEmpty
-                              ? event.locations
+                          children: widget.event.locations.isNotEmpty
+                              ? widget.event.locations
                                   .map((localization) => Text(localization))
                                   .toList()
                               : [],
@@ -101,13 +126,20 @@ class DetailsEventPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(5),
                     ),
                   ),
-                  icon: const Icon(
-                    Icons.star,
+                  icon: Icon(
+                    isSubscriber ? Icons.star : Icons.star_border,
                     color: Colors.white,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      isSubscriber = !isSubscriber;
+                      showSnackBar(isSubscriber);
+                    });
+                  },
                   label: Text(
-                    'Adicionar à sua agenda',
+                    isSubscriber
+                        ? 'Remover de sua agenda'
+                        : 'Adicionar à sua agenda',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -122,9 +154,10 @@ class DetailsEventPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Text(
-                  event.description == 'without description'
+                  widget.event.description == 'without description'
                       ? ''
-                      : StringFormater.removeHtmlTags(event.description ?? ''),
+                      : StringFormater.removeHtmlTags(
+                          widget.event.description ?? ''),
                   style: const TextStyle(
                     color: Colors.black54,
                     fontWeight: FontWeight.w500,
@@ -138,25 +171,28 @@ class DetailsEventPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 20, bottom: 5),
                     child: Text(
-                      event.peopleLabel.isNotEmpty ? event.peopleLabel[0] : '',
+                      widget.event.peopleLabel.isNotEmpty
+                          ? widget.event.peopleLabel[0]
+                          : '',
                       style: const TextStyle(
                         color: Colors.black54,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
-                  event.peopleName.isNotEmpty &&
-                          event.peopleInstitution.isNotEmpty
+                  widget.event.peopleName.isNotEmpty &&
+                          widget.event.peopleInstitution.isNotEmpty
                       ? ListTile(
-                          leading: event.peopleUrlPicture.isNotEmpty &&
-                                  event.peopleUrlPicture[0] != null
+                          leading: widget.event.peopleUrlPicture.isNotEmpty &&
+                                  widget.event.peopleUrlPicture[0] != null
                               ? ClipRRect(
                                   borderRadius: BorderRadius.circular(100),
                                   child: SizedBox(
                                     width: 50,
                                     height: 50,
                                     child: CachedNetworkImage(
-                                      imageUrl: event.peopleUrlPicture[0],
+                                      imageUrl:
+                                          widget.event.peopleUrlPicture[0],
                                       placeholder: (context, url) =>
                                           const CircularProgressIndicator(),
                                       errorWidget: (context, url, error) =>
@@ -174,15 +210,15 @@ class DetailsEventPage extends StatelessWidget {
                                   backgroundColor: Colors.white,
                                 ),
                           title: Text(
-                            event.peopleName.isNotEmpty &&
-                                    event.peopleName[0] != null
-                                ? event.peopleName[0]
+                            widget.event.peopleName.isNotEmpty &&
+                                    widget.event.peopleName[0] != null
+                                ? widget.event.peopleName[0]
                                 : '',
                           ),
                           subtitle: Text(
-                            event.peopleInstitution.isNotEmpty &&
-                                    event.peopleInstitution[0] != null
-                                ? event.peopleInstitution[0]
+                            widget.event.peopleInstitution.isNotEmpty &&
+                                    widget.event.peopleInstitution[0] != null
+                                ? widget.event.peopleInstitution[0]
                                 : '',
                           ),
                         )
