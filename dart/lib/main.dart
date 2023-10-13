@@ -1,5 +1,7 @@
+import 'package:chuva_dart/models/event_model.dart';
 import 'package:chuva_dart/utils/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -27,15 +29,26 @@ class ChuvaDart extends StatelessWidget {
         )
       ],
       child: MaterialApp.router(
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate
+        ],
+        supportedLocales: [const Locale('pt', 'BR')],
         routerConfig: GoRouter(
           routes: [
             GoRoute(
               path: AppRoutes.HOME,
-              builder: (context, state) => DetailsEventPage(),
+              builder: (context, state) => Calendar(),
             ),
             GoRoute(
               path: AppRoutes.DETAILS_PAGE,
-              builder: (context, state) => DetailsEventPage(),
+              builder: (context, state) {
+                final eventModel = state.extra as EventModel;
+
+                return DetailsEventPage(
+                  event: eventModel,
+                );
+              },
             ),
           ],
         ),
@@ -78,7 +91,9 @@ class _CalendarState extends State<Calendar> {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size(double.infinity, 100),
-        child: AppBarComponent(),
+        child: AppBarComponent(
+          onPressed: () {},
+        ),
       ),
       body: Column(
         children: [
@@ -168,7 +183,8 @@ class _CalendarState extends State<Calendar> {
                       itemCount: filteredList.length,
                       itemBuilder: (context, index) {
                         return GestureDetector(
-                          onTap: () => context.go(AppRoutes.DETAILS_PAGE),
+                          onTap: () => context.push(AppRoutes.DETAILS_PAGE,
+                              extra: filteredList.elementAt(index)),
                           child: CardInfoComponent(
                             eventModel: filteredList.elementAt(index),
                           ),
