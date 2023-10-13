@@ -15,4 +15,14 @@ class DateFormater {
 
     return DateFormat('HH:mm').format(newDate);
   }
+
+  static String dayOfWeek(String date) {
+    final newDate = DateTime.parse(date);
+
+    String dayOfWeek = DateFormat('EEEE', 'pt_BR').format(newDate);
+
+    dayOfWeek = dayOfWeek[0].toUpperCase() + dayOfWeek.substring(1);
+
+    return dayOfWeek;
+  }
 }
