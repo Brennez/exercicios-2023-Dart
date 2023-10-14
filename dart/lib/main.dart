@@ -1,4 +1,5 @@
 import 'package:chuva_dart/models/event_model.dart';
+import 'package:chuva_dart/pages/profile_page.dart';
 import 'package:chuva_dart/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -29,11 +30,12 @@ class ChuvaDart extends StatelessWidget {
         )
       ],
       child: MaterialApp.router(
-        localizationsDelegates: [
+        localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: [const Locale('pt', 'BR')],
+        supportedLocales: const [Locale('pt', 'BR')],
         routerConfig: GoRouter(
           routes: [
             GoRoute(
@@ -50,6 +52,16 @@ class ChuvaDart extends StatelessWidget {
                 );
               },
             ),
+            GoRoute(
+              path: AppRoutes.PROFILE_PAGE,
+              builder: (context, state) {
+                final eventModel = state.extra as EventModel;
+
+                return ProfilePage(
+                  event: eventModel,
+                );
+              },
+            )
           ],
         ),
         title: 'Exercicio chuva',
