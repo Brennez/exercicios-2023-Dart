@@ -25,4 +25,12 @@ class DateFormater {
 
     return dayOfWeek;
   }
+
+  static String abbreviatedDate(String date) {
+    final newDate = DateTime.parse(date);
+
+    String dayOfWeek = DateFormat('EE, dd/MM/yyyy', 'pt_BR').format(newDate);
+
+    return dayOfWeek;
+  }
 }
