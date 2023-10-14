@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chuva_dart/components/app_bar_component.dart';
 import 'package:chuva_dart/components/card_info_component.dart';
-import 'package:chuva_dart/components/person_info_component.dart';
 import 'package:chuva_dart/providers/event_provider.dart';
 import 'package:chuva_dart/utils/date_formater.dart';
 import 'package:chuva_dart/utils/string_formater.dart';
@@ -41,25 +40,48 @@ class ProfilePage extends StatelessWidget {
                       child: SizedBox(
                         width: 98,
                         height: 98,
-                        child: CachedNetworkImage(
-                          imageUrl: event.peopleUrlPicture[0],
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(),
-                          errorWidget: (context, url, error) => const Icon(
-                            Icons.error,
-                            color: Colors.red,
-                          ),
-                        ),
+                        child: event.peopleUrlPicture.isNotEmpty &&
+                                event.peopleUrlPicture[0] != null
+                            ? CachedNetworkImage(
+                                imageUrl: event.peopleUrlPicture[0],
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(
+                                  Icons.error,
+                                  color: Colors.red,
+                                ),
+                              )
+                            : CircleAvatar(
+                                radius: 50,
+                                backgroundColor: const Color(0xff306dc3),
+                                child: Text(
+                                  StringFormater.getInitialName(
+                                      event.peopleName),
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 50),
+                                ),
+                              ),
                       ),
                     ),
                   ),
                   Expanded(
-                      flex: 3,
-                      child: PersonInfoComponent(
-                        event: event,
-                        hasCircleAvatar: false,
-                      )),
+                    flex: 3,
+                    child: event.peopleName.isNotEmpty &&
+                            event.peopleName[0] != null
+                        ? ListTile(
+                            title: Text(
+                              event.peopleName[0],
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 24,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          )
+                        : const Text(''),
+                  ),
                 ],
               ),
             ),
@@ -67,20 +89,22 @@ class ProfilePage extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  const Row(
-                    children: [
-                      Text('Bio',
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                          )),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text(StringFormater.removeHtmlTags(event.peopleBio[0])),
+                  if (event.peopleBio.isNotEmpty && event.peopleBio[0] != null)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Bio',
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 16,
+                            )),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(StringFormater.removeHtmlTags(event.peopleBio[0])),
+                      ],
+                    ),
                   const Row(
                     children: [
                       Text(
@@ -99,7 +123,7 @@ class ProfilePage extends StatelessWidget {
                       children: [
                         Text(
                           DateFormater.abbreviatedDate(event.start),
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
                             color: Colors.black87,
                             fontWeight: FontWeight.w700,
@@ -111,9 +135,9 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
+            SizedBox(
               width: double.infinity,
-              height: 300,
+              height: 350,
               child: ListView.builder(
                 itemCount: filteredEvents.length,
                 itemBuilder: (context, index) {
