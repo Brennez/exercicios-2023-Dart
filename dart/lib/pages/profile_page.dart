@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chuva_dart/components/app_bar_component.dart';
 import 'package:chuva_dart/components/card_info_component.dart';
 import 'package:chuva_dart/providers/event_provider.dart';
+import 'package:chuva_dart/utils/app_routes.dart';
 import 'package:chuva_dart/utils/date_formater.dart';
 import 'package:chuva_dart/utils/string_formater.dart';
 import 'package:flutter/material.dart';
@@ -137,12 +138,16 @@ class ProfilePage extends StatelessWidget {
             ),
             SizedBox(
               width: double.infinity,
-              height: 350,
+              height: 300,
               child: ListView.builder(
                 itemCount: filteredEvents.length,
                 itemBuilder: (context, index) {
-                  return CardInfoComponent(
-                    eventModel: filteredEvents[index],
+                  return GestureDetector(
+                    onTap: () => context.push(AppRoutes.DETAILS_PAGE,
+                        extra: filteredEvents[index]),
+                    child: CardInfoComponent(
+                      eventModel: filteredEvents[index],
+                    ),
                   );
                 },
               ),
