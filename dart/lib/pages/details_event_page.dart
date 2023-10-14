@@ -1,11 +1,13 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chuva_dart/models/event_model.dart';
-import 'package:chuva_dart/utils/date_formater.dart';
-import 'package:chuva_dart/utils/string_formater.dart';
+import 'package:chuva_dart/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:from_css_color/from_css_color.dart';
 import 'package:go_router/go_router.dart';
+
+import '../components/person_info_component.dart';
 import '../components/app_bar_component.dart';
+import '../models/event_model.dart';
+import '../utils/date_formater.dart';
+import '../utils/string_formater.dart';
 
 class DetailsEventPage extends StatefulWidget {
   final EventModel event;
@@ -140,7 +142,7 @@ class _DetailsEventPageState extends State<DetailsEventPage> {
                     isSubscriber
                         ? 'Remover de sua agenda'
                         : 'Adicionar à sua agenda',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.w400,
@@ -182,45 +184,10 @@ class _DetailsEventPageState extends State<DetailsEventPage> {
                   ),
                   widget.event.peopleName.isNotEmpty &&
                           widget.event.peopleInstitution.isNotEmpty
-                      ? ListTile(
-                          leading: widget.event.peopleUrlPicture.isNotEmpty &&
-                                  widget.event.peopleUrlPicture[0] != null
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: CachedNetworkImage(
-                                      imageUrl:
-                                          widget.event.peopleUrlPicture[0],
-                                      placeholder: (context, url) =>
-                                          const CircularProgressIndicator(),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(
-                                        Icons.error,
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : const CircleAvatar(
-                                  radius: 30,
-                                  backgroundImage:
-                                      AssetImage('assets/images/user-icon.png'),
-                                  backgroundColor: Colors.white,
-                                ),
-                          title: Text(
-                            widget.event.peopleName.isNotEmpty &&
-                                    widget.event.peopleName[0] != null
-                                ? widget.event.peopleName[0]
-                                : '',
-                          ),
-                          subtitle: Text(
-                            widget.event.peopleInstitution.isNotEmpty &&
-                                    widget.event.peopleInstitution[0] != null
-                                ? widget.event.peopleInstitution[0]
-                                : '',
-                          ),
+                      ? PersonInfoComponent(
+                          event: widget.event,
+                          onTap: () => context.push(AppRoutes.PROFILE_PAGE,
+                              extra: widget.event),
                         )
                       : const SizedBox(),
                 ],
