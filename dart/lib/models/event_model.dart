@@ -4,7 +4,7 @@ class EventModel {
   final String end;
   final String title;
   final String? description;
-  final bool isFavorite;
+  bool isFavorite;
 
   final int categoryId;
   final String categoryTitle;

@@ -18,4 +18,12 @@ class EventProvider extends ChangeNotifier {
 
     return filteredList;
   }
+
+  Future<void> toogleFavorite(EventModel model) async {
+    model.isFavorite = !model.isFavorite;
+
+    await Future.delayed(const Duration(seconds: 1));
+
+    notifyListeners();
+  }
 }

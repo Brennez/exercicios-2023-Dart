@@ -1,7 +1,9 @@
+import 'package:chuva_dart/providers/event_provider.dart';
 import 'package:chuva_dart/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:from_css_color/from_css_color.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../components/person_info_component.dart';
 import '../components/app_bar_component.dart';
@@ -19,6 +21,7 @@ class DetailsEventPage extends StatefulWidget {
 
 class _DetailsEventPageState extends State<DetailsEventPage> {
   bool isSubscriber = false;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -122,32 +125,61 @@ class _DetailsEventPageState extends State<DetailsEventPage> {
                 width: MediaQuery.of(context).size.width * .96,
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xff306dc3),
+                    backgroundColor: isLoading
+                        ? const Color(0xffdcdcdc)
+                        : const Color(0xff306dc3),
                     elevation: 2,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
                   ),
-                  icon: Icon(
-                    isSubscriber ? Icons.star : Icons.star_border,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isSubscriber = !isSubscriber;
-                      showSnackBar(isSubscriber);
-                    });
-                  },
-                  label: Text(
-                    isSubscriber
-                        ? 'Remover de sua agenda'
-                        : 'Adicionar à sua agenda',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
+                  icon: isLoading
+                      ? const Icon(
+                          Icons.refresh,
+                          color: Colors.grey,
+                        )
+                      : Icon(
+                          isSubscriber ? Icons.star : Icons.star_border,
+                          color: Colors.white,
+                        ),
+                  onPressed: isLoading
+                      ? null
+                      : () {
+                          setState(() {
+                            isSubscriber = !isSubscriber;
+
+                            setState(() => isLoading = true);
+
+                            Provider.of<EventProvider>(context, listen: false)
+                                .toogleFavorite(widget.event)
+                                .then((value) {
+                              setState(
+                                () => isLoading = false,
+                              );
+                            });
+
+                            showSnackBar(isSubscriber);
+                          });
+                        },
+                  label: isLoading
+                      ? const Text(
+                          'Processando',
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        )
+                      : Text(
+                          isSubscriber
+                              ? 'Remover de sua agenda'
+                              : 'Adicionar à sua agenda',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(
