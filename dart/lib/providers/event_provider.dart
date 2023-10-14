@@ -5,8 +5,17 @@ import '../http/client.dart';
 import '../repositories/event_repository.dart';
 
 class EventProvider extends ChangeNotifier {
+  List<EventModel> events = [];
+
   Future<List<EventModel>> getEvents() async {
-    final events = await EventRepository(client: HttpClient()).getEvents();
+    events = await EventRepository(client: HttpClient()).getEvents();
     return events;
+  }
+
+  List<EventModel> getEventsById(int id) {
+    final filteredList =
+        events.where((item) => item.peopleId.contains(id)).toList();
+
+    return filteredList;
   }
 }
