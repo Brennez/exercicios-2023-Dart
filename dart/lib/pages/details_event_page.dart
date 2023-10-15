@@ -1,11 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chuva_dart/providers/event_provider.dart';
-import 'package:chuva_dart/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:from_css_color/from_css_color.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../components/person_info_component.dart';
 import '../components/app_bar_component.dart';
 import '../models/event_model.dart';
 import '../utils/date_formater.dart';
@@ -41,6 +40,20 @@ class _DetailsEventPageState extends State<DetailsEventPage> {
           ),
         );
       }
+    }
+
+    void favoriteEvent() {
+      isSubscriber = !isSubscriber;
+
+      setState(() => isLoading = true);
+
+      Provider.of<EventProvider>(context, listen: false)
+          .toogleFavorite(widget.event)
+          .then((value) {
+        setState(
+          () => isLoading = false,
+        );
+      });
     }
 
     return Scaffold(
@@ -145,21 +158,8 @@ class _DetailsEventPageState extends State<DetailsEventPage> {
                   onPressed: isLoading
                       ? null
                       : () {
-                          setState(() {
-                            isSubscriber = !isSubscriber;
-
-                            setState(() => isLoading = true);
-
-                            Provider.of<EventProvider>(context, listen: false)
-                                .toogleFavorite(widget.event)
-                                .then((value) {
-                              setState(
-                                () => isLoading = false,
-                              );
-                            });
-
-                            showSnackBar(isSubscriber);
-                          });
+                          favoriteEvent();
+                          showSnackBar(isSubscriber);
                         },
                   label: isLoading
                       ? const Text(
@@ -214,14 +214,54 @@ class _DetailsEventPageState extends State<DetailsEventPage> {
                       ),
                     ),
                   ),
-                  widget.event.peopleName.isNotEmpty &&
-                          widget.event.peopleInstitution.isNotEmpty
-                      ? PersonInfoComponent(
-                          event: widget.event,
-                          onTap: () => context.push(AppRoutes.PROFILE_PAGE,
-                              extra: widget.event),
-                        )
-                      : const SizedBox(),
+                  SizedBox(
+                    height: 200,
+                    child: ListView.builder(
+                      itemCount: widget.event.peopleName.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          leading: widget.event.peopleUrlPicture[index] != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: SizedBox(
+                                    width: 50,
+                                    height: 50,
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                          widget.event.peopleUrlPicture[index],
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) =>
+                                          const CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(
+                                        Icons.error,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : const CircleAvatar(
+                                  radius: 30,
+                                  backgroundImage:
+                                      AssetImage('assets/images/user-icon.png'),
+                                  backgroundColor: Colors.white,
+                                ),
+                          title: widget.event.peopleName.isNotEmpty &&
+                                  widget.event.peopleName[index] != null
+                              ? Text(
+                                  widget.event.peopleName[index],
+                                )
+                              : const Text(''),
+                          subtitle: widget.event.peopleInstitution.isNotEmpty &&
+                                  widget.event.peopleInstitution[index] != null
+                              ? Text(
+                                  widget.event.peopleInstitution[index],
+                                )
+                              : const Text(''),
+                        );
+                      },
+                    ),
+                  )
                 ],
               )
             ],
