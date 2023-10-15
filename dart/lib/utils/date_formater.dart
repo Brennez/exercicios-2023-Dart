@@ -33,4 +33,10 @@ class DateFormater {
 
     return dayOfWeek;
   }
+
+  static String abbreviatedMonth(DateTime date) {
+    String dateFormated = DateFormat('MMM', 'pt_BR').format(date);
+
+    return dateFormated[0].toUpperCase() + dateFormated.substring(1);
+  }
 }

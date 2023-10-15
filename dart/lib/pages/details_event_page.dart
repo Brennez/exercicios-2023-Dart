@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chuva_dart/pages/profile_page.dart';
 import 'package:chuva_dart/providers/event_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:from_css_color/from_css_color.dart';
@@ -19,13 +20,16 @@ class DetailsEventPage extends StatefulWidget {
 }
 
 class _DetailsEventPageState extends State<DetailsEventPage> {
-  bool isSubscriber = false;
   bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
+    bool isSubscriber = widget.event.isFavorite;
+
     void showSnackBar(bool isSubscriber) {
-      if (isSubscriber) {
+      print('AQUI: $isSubscriber');
+
+      if (!isSubscriber) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             duration: Duration(milliseconds: 700),
@@ -43,12 +47,10 @@ class _DetailsEventPageState extends State<DetailsEventPage> {
     }
 
     void favoriteEvent() {
-      isSubscriber = !isSubscriber;
-
       setState(() => isLoading = true);
 
       Provider.of<EventProvider>(context, listen: false)
-          .toogleFavorite(widget.event)
+          .setEventFavorite(widget.event.eventId)
           .then((value) {
         setState(
           () => isLoading = false,
@@ -219,45 +221,57 @@ class _DetailsEventPageState extends State<DetailsEventPage> {
                     child: ListView.builder(
                       itemCount: widget.event.peopleName.length,
                       itemBuilder: (context, index) {
-                        return ListTile(
-                          leading: widget.event.peopleUrlPicture[index] != null
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: CachedNetworkImage(
-                                      imageUrl:
-                                          widget.event.peopleUrlPicture[index],
-                                      fit: BoxFit.cover,
-                                      placeholder: (context, url) =>
-                                          const CircularProgressIndicator(),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(
-                                        Icons.error,
-                                        color: Colors.red,
+                        return GestureDetector(
+                          onTap: () =>
+                              Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ProfilePage(
+                              event: widget.event,
+                              index: index,
+                            ),
+                          )),
+                          child: ListTile(
+                            leading: widget.event.peopleUrlPicture[index] !=
+                                    null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(100),
+                                    child: SizedBox(
+                                      width: 50,
+                                      height: 50,
+                                      child: CachedNetworkImage(
+                                        imageUrl: widget
+                                            .event.peopleUrlPicture[index],
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) =>
+                                            const CircularProgressIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(
+                                          Icons.error,
+                                          color: Colors.red,
+                                        ),
                                       ),
                                     ),
+                                  )
+                                : const CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage: AssetImage(
+                                        'assets/images/user-icon.png'),
+                                    backgroundColor: Colors.white,
                                   ),
-                                )
-                              : const CircleAvatar(
-                                  radius: 30,
-                                  backgroundImage:
-                                      AssetImage('assets/images/user-icon.png'),
-                                  backgroundColor: Colors.white,
-                                ),
-                          title: widget.event.peopleName.isNotEmpty &&
-                                  widget.event.peopleName[index] != null
-                              ? Text(
-                                  widget.event.peopleName[index],
-                                )
-                              : const Text(''),
-                          subtitle: widget.event.peopleInstitution.isNotEmpty &&
-                                  widget.event.peopleInstitution[index] != null
-                              ? Text(
-                                  widget.event.peopleInstitution[index],
-                                )
-                              : const Text(''),
+                            title: widget.event.peopleName.isNotEmpty &&
+                                    widget.event.peopleName[index] != null
+                                ? Text(
+                                    widget.event.peopleName[index],
+                                  )
+                                : const Text(''),
+                            subtitle:
+                                widget.event.peopleInstitution.isNotEmpty &&
+                                        widget.event.peopleInstitution[index] !=
+                                            null
+                                    ? Text(
+                                        widget.event.peopleInstitution[index],
+                                      )
+                                    : const Text(''),
+                          ),
                         );
                       },
                     ),
