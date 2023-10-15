@@ -1,17 +1,16 @@
-import 'package:chuva_dart/models/event_model.dart';
-import 'package:chuva_dart/pages/profile_page.dart';
-import 'package:chuva_dart/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../models/event_model.dart';
+import '../utils/app_routes.dart';
+import '../utils/date_formater.dart';
 import 'components/card_info_component.dart';
 import 'components/header_top_component.dart';
 import 'components/app_bar_component.dart';
 
 import '../providers/event_provider.dart';
-import '../utils/date_formater.dart';
 import 'pages/details_event_page.dart';
 
 void main() {
@@ -40,7 +39,7 @@ class ChuvaDart extends StatelessWidget {
           routes: [
             GoRoute(
               path: AppRoutes.HOME,
-              builder: (context, state) => Calendar(),
+              builder: (context, state) => const Calendar(),
             ),
             GoRoute(
               path: AppRoutes.DETAILS_PAGE,
@@ -52,16 +51,6 @@ class ChuvaDart extends StatelessWidget {
                 );
               },
             ),
-            GoRoute(
-              path: AppRoutes.PROFILE_PAGE,
-              builder: (context, state) {
-                final eventModel = state.extra as EventModel;
-
-                return ProfilePage(
-                  event: eventModel,
-                );
-              },
-            )
           ],
         ),
         title: 'Exercicio chuva',
@@ -85,8 +74,6 @@ class Calendar extends StatefulWidget {
 class _CalendarState extends State<Calendar> {
   DateTime _currentDate = DateTime(2023, 11, 26);
 
-  bool _clicked = false;
-
   final List<String> daysMonth = ['26', '27', '28', '29', '30'];
 
   void _changeDate(DateTime newDate) {
@@ -97,9 +84,24 @@ class _CalendarState extends State<Calendar> {
 
   int currentPage = 0;
   String dayMonth = '26';
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    Provider.of<EventProvider>(context, listen: false)
+        .getEvents()
+        .then((value) {
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final filteredList =
+        Provider.of<EventProvider>(context, listen: false).items;
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size(double.infinity, 100),
@@ -117,17 +119,17 @@ class _CalendarState extends State<Calendar> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6),
                   color: Colors.white,
-                  child: const Column(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Nov',
-                        style: TextStyle(
+                        DateFormater.abbreviatedMonth(_currentDate),
+                        style: const TextStyle(
                             fontSize: 22, fontWeight: FontWeight.w400),
                       ),
                       Text(
-                        '2023',
-                        style: TextStyle(
+                        _currentDate.year.toString(),
+                        style: const TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -174,37 +176,21 @@ class _CalendarState extends State<Calendar> {
             ],
           ),
           Expanded(
-            child: FutureBuilder(
-              future: Provider.of<EventProvider>(context, listen: false)
-                  .getEvents(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
+            child: isLoading
+                ? const Center(
                     child: CircularProgressIndicator(),
-                  );
-                } else if (!snapshot.hasData) {
-                  return const Center(
-                    child: Text('Sem dados por enquanto...'),
-                  );
-                } else {
-                  final filteredList = snapshot.data!.where(
-                    (item) => DateFormater.dayFormater(item.start) == dayMonth,
-                  );
-
-                  return ListView.builder(
-                      itemCount: filteredList.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () => context.push(AppRoutes.DETAILS_PAGE,
-                              extra: filteredList.elementAt(index)),
-                          child: CardInfoComponent(
-                            eventModel: filteredList.elementAt(index),
-                          ),
-                        );
-                      });
-                }
-              },
-            ),
+                  )
+                : ListView.builder(
+                    itemCount: filteredList.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () => context.push(AppRoutes.DETAILS_PAGE,
+                            extra: filteredList.elementAt(index)),
+                        child: CardInfoComponent(
+                          eventModel: filteredList.elementAt(index),
+                        ),
+                      );
+                    }),
           ),
         ],
       ),
@@ -232,7 +218,6 @@ class _ActivityState extends State<Activity> {
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const Text('A Física dos Buracos Negros Supermassivos'),
-        const Text('Mesa redonda'),
         const Text('Domingo 07:00h - 08:00h'),
         const Text('Sthepen William Hawking'),
         const Text('Maputo'),
