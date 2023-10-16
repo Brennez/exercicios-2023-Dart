@@ -27,8 +27,6 @@ class _DetailsEventPageState extends State<DetailsEventPage> {
     bool isSubscriber = widget.event.isFavorite;
 
     void showSnackBar(bool isSubscriber) {
-      print('AQUI: $isSubscriber');
-
       if (!isSubscriber) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
