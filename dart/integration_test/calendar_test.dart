@@ -1,6 +1,8 @@
 import 'package:chuva_dart/main.dart';
+import 'package:chuva_dart/providers/event_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -8,6 +10,16 @@ void main() {
   group('Calendar page', () {
     testWidgets('Valida estado inicial', (WidgetTester tester) async {
       await tester.pumpWidget(const ChuvaDart());
+
+      await tester.pumpWidget(
+        ChangeNotifierProvider(
+          create: (context) => EventProvider(),
+          child: const Calendar(),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
       expect(find.text('Programação'), findsOneWidget);
       expect(find.text('Nov'), findsOneWidget);
       expect(find.text('2023'), findsOneWidget);
@@ -16,8 +28,17 @@ void main() {
       expect(find.text('Mesa redonda de 07:00 até 08:00'), findsOneWidget);
     });
 
-    testWidgets('Seleciona dia 28 e verifica que a mesa redonda foi renderizada', (WidgetTester tester) async {
+    testWidgets(
+        'Seleciona dia 28 e verifica que a mesa redonda foi renderizada',
+        (WidgetTester tester) async {
       await tester.pumpWidget(const ChuvaDart());
+
+      await tester.pumpWidget(
+        ChangeNotifierProvider(
+          create: (context) => EventProvider(),
+          child: const Calendar(),
+        ),
+      );
 
       // Check that 'Palestra de 09:30 até 10:00' is not on the screen before tapping '28'.
       expect(find.text('Palestra de 09:30 até 10:00'), findsNothing);
@@ -28,7 +49,6 @@ void main() {
 
       // Tap on the '28'.
       await tester.tap(find.text('28'));
-      await tester.pumpAndSettle();
 
       await expectLater(
         find.byType(Calendar),
