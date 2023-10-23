@@ -33,13 +33,6 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(const ChuvaDart());
 
-      await tester.pumpWidget(
-        ChangeNotifierProvider(
-          create: (context) => EventProvider(),
-          child: const Calendar(),
-        ),
-      );
-
       // Check that 'Palestra de 09:30 até 10:00' is not on the screen before tapping '28'.
       expect(find.text('Palestra de 09:30 até 10:00'), findsNothing);
       await expectLater(

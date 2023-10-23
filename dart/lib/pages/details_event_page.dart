@@ -107,7 +107,7 @@ class _DetailsEventPageState extends State<DetailsEventPage> {
                           width: 5,
                         ),
                         Text(
-                            '${DateFormater.dayOfWeek(widget.event.start)} ${DateFormater.hourFormater(widget.event.start)}h - ${DateFormater.hourFormater(widget.event.end)}h'),
+                            '${DateFormater.dayOfWeek(widget.event.start)} de ${DateFormater.hourFormater(widget.event.start)}h - ${DateFormater.hourFormater(widget.event.end)}h'),
                       ],
                     ),
                     Row(
@@ -172,7 +172,7 @@ class _DetailsEventPageState extends State<DetailsEventPage> {
                         )
                       : Text(
                           isSubscriber
-                              ? 'Remover de sua agenda'
+                              ? 'Remover da sua agenda'
                               : 'Adicionar à sua agenda',
                           style: const TextStyle(
                             color: Colors.white,

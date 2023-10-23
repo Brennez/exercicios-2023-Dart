@@ -4,11 +4,19 @@ class StringFormater {
   }
 
   static getInitialName(List<dynamic> name) {
-    List<String> separeteName = name[0].split(" ");
+    String iniciais = '';
 
-    String firstLetter = separeteName[0][0];
-    String secondtLetter = separeteName[1][0];
+    for (var latter in name) {
+      if (latter is String) {
+        List<String> palavras = latter.split(' ');
+        for (var palavra in palavras) {
+          if (palavra.isNotEmpty) {
+            iniciais += palavra[0];
+          }
+        }
+      }
+    }
 
-    return firstLetter + secondtLetter;
+    return iniciais;
   }
 }

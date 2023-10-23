@@ -36,6 +36,7 @@ class ChuvaDart extends StatelessWidget {
         ],
         supportedLocales: const [Locale('pt', 'BR')],
         routerConfig: GoRouter(
+          initialLocation: AppRoutes.HOME,
           routes: [
             GoRoute(
               path: AppRoutes.HOME,
@@ -77,9 +78,11 @@ class _CalendarState extends State<Calendar> {
   final List<String> daysMonth = ['26', '27', '28', '29', '30'];
 
   void _changeDate(DateTime newDate) {
-    setState(() {
-      _currentDate = newDate;
-    });
+    if (this.mounted) {
+      setState(() {
+        _currentDate = newDate;
+      });
+    }
   }
 
   int currentPage = 0;
@@ -92,9 +95,11 @@ class _CalendarState extends State<Calendar> {
     Provider.of<EventProvider>(context, listen: false)
         .getEvents()
         .then((value) {
-      setState(() {
-        isLoading = false;
-      });
+      if (this.mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     });
   }
 
@@ -102,7 +107,9 @@ class _CalendarState extends State<Calendar> {
     Provider.of<EventProvider>(context, listen: false)
         .getEvents()
         .then((value) {
-      setState(() {});
+      if (this.mounted) {
+        setState(() {});
+      }
     });
   }
 
@@ -113,99 +120,112 @@ class _CalendarState extends State<Calendar> {
     final filteredList =
         items.where((e) => DateFormater.dayFormater(e.start) == dayMonth);
 
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size(double.infinity, 100),
-        child: AppBarComponent(
-          onPressed: () {},
-        ),
-      ),
-      body: RefreshIndicator(
-        onRefresh: refreshPage,
-        child: Column(
-          children: [
-            const HeaderComponent(),
-            Row(
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Localizations(
+        locale: const Locale('pt', 'BR'),
+        delegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        child: Scaffold(
+          appBar: PreferredSize(
+            preferredSize: const Size(double.infinity, 100),
+            child: AppBarComponent(
+              onPressed: () {},
+            ),
+          ),
+          body: RefreshIndicator(
+            onRefresh: refreshPage,
+            child: Column(
               children: [
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6),
-                    color: Colors.white,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          DateFormater.abbreviatedMonth(_currentDate),
-                          style: const TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.w400),
-                        ),
-                        Text(
-                          _currentDate.year.toString(),
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 5,
-                  child: Container(
-                    color: const Color(0xff306dc3),
-                    height: 60,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: daysMonth.length,
-                      itemBuilder: (context, index) {
-                        return Row(
+                const HeaderComponent(),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        color: Colors.white,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  currentPage = index;
-                                  dayMonth = daysMonth[index];
-                                });
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: Text(
-                                  daysMonth[index],
-                                  style: TextStyle(
-                                    color: currentPage == index
-                                        ? Colors.white
-                                        : const Color(0xffb0c3e1),
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ),
+                            Text(
+                              'Nov',
+                              style: const TextStyle(
+                                  fontSize: 22, fontWeight: FontWeight.w400),
+                            ),
+                            Text(
+                              _currentDate.year.toString(),
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                           ],
-                        );
-                      },
+                        ),
+                      ),
                     ),
-                  ),
+                    Expanded(
+                      flex: 5,
+                      child: Container(
+                        color: const Color(0xff306dc3),
+                        height: 60,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: daysMonth.length,
+                          itemBuilder: (context, index) {
+                            return Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    if (this.mounted) {
+                                      setState(() {
+                                        currentPage = index;
+                                        dayMonth = daysMonth[index];
+                                      });
+                                    }
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12),
+                                    child: Text(
+                                      daysMonth[index],
+                                      style: TextStyle(
+                                        color: currentPage == index
+                                            ? Colors.white
+                                            : const Color(0xffb0c3e1),
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : ListView.builder(
+                          itemCount: filteredList.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () => context.push(AppRoutes.DETAILS_PAGE,
+                                  extra: filteredList.elementAt(index)),
+                              child: CardInfoComponent(
+                                eventModel: filteredList.elementAt(index),
+                              ),
+                            );
+                          }),
                 ),
               ],
             ),
-            Expanded(
-              child: isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : ListView.builder(
-                      itemCount: filteredList.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () => context.push(AppRoutes.DETAILS_PAGE,
-                              extra: filteredList.elementAt(index)),
-                          child: CardInfoComponent(
-                            eventModel: filteredList.elementAt(index),
-                          ),
-                        );
-                      }),
-            ),
-          ],
+          ),
         ),
       ),
     );

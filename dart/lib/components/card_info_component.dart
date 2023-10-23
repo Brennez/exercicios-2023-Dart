@@ -14,6 +14,7 @@ class CardInfoComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      alignment: Alignment.center,
       children: [
         Card(
           margin: const EdgeInsets.all(5),
@@ -33,48 +34,51 @@ class CardInfoComponent extends StatelessWidget {
                       width: 6),
                 ),
               ),
-              child: ListTile(
-                title: Text(
-                  '${eventModel.categoryTitle} de ${DateFormater.hourFormater(eventModel.start)} até ${DateFormater.hourFormater(eventModel.end)}',
-                  style: const TextStyle(
-                      color: Colors.black54,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 3,
-                    ),
-                    Text(
-                      eventModel.title,
-                      style: const TextStyle(
-                          color: Colors.black87,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Row(
-                      children: eventModel.peopleName
-                          .map(
-                            (name) => FittedBox(
-                              child: Text(
-                                eventModel.peopleName.length > 1
-                                    ? '$name, '
-                                    : name,
-                                style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600),
+              child: Directionality(
+                textDirection: TextDirection.ltr,
+                child: ListTile(
+                  title: Text(
+                    '${eventModel.typeOfEvent} de ${DateFormater.hourFormater(eventModel.start)} até ${DateFormater.hourFormater(eventModel.end)}',
+                    style: const TextStyle(
+                        color: Colors.black54,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 3,
+                      ),
+                      Text(
+                        eventModel.title,
+                        style: const TextStyle(
+                            color: Colors.black87,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        children: eventModel.peopleName
+                            .map(
+                              (name) => FittedBox(
+                                child: Text(
+                                  eventModel.peopleName.length > 1
+                                      ? '$name, '
+                                      : name,
+                                  style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600),
+                                ),
                               ),
-                            ),
-                          )
-                          .toList(),
-                    )
-                  ],
+                            )
+                            .toList(),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
