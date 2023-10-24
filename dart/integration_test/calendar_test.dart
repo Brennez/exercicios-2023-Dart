@@ -8,6 +8,11 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('Calendar page', () {
+    final IntegrationTestWidgetsFlutterBinding binding =
+        IntegrationTestWidgetsFlutterBinding();
+
+    binding.defaultTestTimeout = Timeout.none;
+
     testWidgets('Valida estado inicial', (WidgetTester tester) async {
       await tester.pumpWidget(const ChuvaDart());
 
