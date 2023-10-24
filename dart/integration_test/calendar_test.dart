@@ -18,7 +18,7 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(const Duration(milliseconds: 100));
 
       expect(find.text('Programação'), findsOneWidget);
       expect(find.text('Nov'), findsOneWidget);
@@ -42,7 +42,9 @@ void main() {
 
       // Tap on the '28'.
       await tester.tap(find.text('28'));
-      await tester.pumpAndSettle();
+
+      await tester.pumpAndSettle(const Duration(milliseconds: 100));
+
       await expectLater(
         find.byType(Calendar),
         matchesGoldenFile('../screenshots/CalendarPage-Day28.png'),
