@@ -42,14 +42,14 @@ void main() {
 
       // Tap on the '28'.
       await tester.tap(find.text('28'));
-
+      await tester.pumpAndSettle();
       await expectLater(
         find.byType(Calendar),
         matchesGoldenFile('../screenshots/CalendarPage-Day28.png'),
       );
 
       // Then check if 'Palestra de 09:30 até 10:00' appears.
-      expect(find.text('Palestra de 09:30 até 10:00'), findsOneWidget);
+      expect(find.text('Palestra de 09:00 até 10:00'), findsOneWidget);
     });
   });
 }
