@@ -151,9 +151,9 @@ class _CalendarState extends State<Calendar> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
+                            const Text(
                               'Nov',
-                              style: const TextStyle(
+                              style: TextStyle(
                                   fontSize: 22, fontWeight: FontWeight.w400),
                             ),
                             Text(
@@ -221,7 +221,8 @@ class _CalendarState extends State<Calendar> {
                                 eventModel: filteredList.elementAt(index),
                               ),
                             );
-                          }),
+                          },
+                        ),
                 ),
               ],
             ),
