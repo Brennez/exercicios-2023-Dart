@@ -18,11 +18,6 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('Activity page', () {
-    final IntegrationTestWidgetsFlutterBinding binding =
-        IntegrationTestWidgetsFlutterBinding();
-
-    binding.defaultTestTimeout = Timeout.none;
-
     testWidgets('Verifica elementos da atividade', (WidgetTester tester) async {
       await loadActivityPage(tester);
 
